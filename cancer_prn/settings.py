@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'edc_registration.apps.AppConfig',
     'edc_protocol.apps.AppConfig',
     'edc_prn.apps.AppConfig',
+    'edc_death_report.apps.AppConfig',
     'cancer_prn.apps.AppConfig',
 ]
 
