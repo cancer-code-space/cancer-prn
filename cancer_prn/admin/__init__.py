@@ -1,0 +1,2 @@
+from .subject_death_admin import SubjectDeathAdmin
+from .subject_offstudy_admin import SubjectOffStudyAdmin

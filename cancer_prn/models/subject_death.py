@@ -1,40 +1,60 @@
 from datetime import datetime, time
-# from django.core.urlresolvers import reverse
 from django.db import models
-from django.db.models.deletion import PROTECT
-# from edc_base.audit_trail import AuditTrail
 from edc_base.model_fields import IsDateEstimatedField
 from edc_death_report.model_mixins import DeathReportModelMixin
-# from edc.entry_meta_data.managers import EntryMetaDataManager
-# from edc.subject.adverse_event.models import BaseBaseDeath
+from edc_identifier.model_mixins import UniqueSubjectIdentifierModelMixin
+from edc_base.model_mixins.base_uuid_model import BaseUuidModel
+from edc_base.sites.site_model_mixin import SiteModelMixin
+from edc_death_report.models import (
+    Cause, CauseCategory, ReasonHospitalized,
+    DiagnosisCode, MedicalResponsibility)
 
-# from .subject_off_study_mixin import SubjectOffStudyMixin
-# from .model_mixins import CrfModelMixin
-from .subject_visit import SubjectVisit
 
+class SubjectDeath(DeathReportModelMixin,
+                   UniqueSubjectIdentifierModelMixin,
+                   SiteModelMixin, BaseUuidModel):
 
-class SubjectDeath(DeathReportModelMixin):
-
-    # added on upgrade
     is_death_date_estimated = IsDateEstimatedField(
         verbose_name="Is date of death estimated?",
         null=True,
         blank=False,
     )
+    cause = models.ManyToManyField(
+        Cause,
+        verbose_name=(
+            'What is the primary source of cause of death information? '
+            '(if multiple source of information, '
+            'list one with the smallest number closest to the top of the list) '))
 
-#     history = AuditTrail()
+    cause_category = models.ManyToManyField(
+        CauseCategory,
+        verbose_name=("Based on the above description, what category "
+                      "best defines the major cause of death? "),
+        help_text="")
 
-    subject_visit = models.OneToOneField(SubjectVisit, on_delete=PROTECT)
+    reason_hospitalized = models.ManyToManyField(
+        ReasonHospitalized,
+        verbose_name="if yes, hospitalized, what was the primary reason for hospitalisation? ",
+        help_text="",
+        blank=True,
+        null=True)
 
-#     entry_meta_data_manager = EntryMetaDataManager(SubjectVisit)
+    diagnosis_code = models.ManyToManyField(
+        DiagnosisCode,
+        max_length=25,
+        verbose_name="Please code the cause of death as one of the following:",
+        help_text="Use diagnosis code from Diagnosis Reference Listing")
+
+    medical_responsibility = models.ManyToManyField(
+        MedicalResponsibility,
+        verbose_name=(
+            "Who was responsible for primary medical care of the "
+            "participant during the month prior to death?"),
+        help_text="")
 
     def get_report_datetime(self):
         return datetime.combine(self.death_date, time(0, 0))
 
-#     def get_absolute_url(self):
-# return reverse('admin:cancer_subject_subjectdeath_change',
-# args=(self.id,))
-
     class Meta:
-        app_label = "cancer_subject"
+        app_label = "cancer_prn"
         verbose_name = "Subject Death"
