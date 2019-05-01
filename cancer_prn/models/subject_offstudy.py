@@ -14,6 +14,7 @@ from edc_offstudy.choices import OFF_STUDY_REASONS
 from edc_identifier.managers import SubjectIdentifierManager
 from edc_visit_schedule.model_mixins.off_schedule_model_mixin import (
     OffScheduleModelMixin)
+from edc_constants.choices import YES_NO
 
 
 class SubjectOffstudy(OffScheduleModelMixin, BaseUuidModel):
@@ -41,12 +42,19 @@ class SubjectOffstudy(OffScheduleModelMixin, BaseUuidModel):
                    'the date/time this information was reported.'))
 
     reason = models.CharField(
-        verbose_name="Please code the primary reason participant taken off-study",
+        verbose_name="Please code the primary"
+        " reason participant taken off-study",
         max_length=115,
         choices=OFF_STUDY_REASONS,
         null=True)
 
     reason_other = OtherCharField()
+
+    schedule = models.CharField(
+        verbose_name='Are scheduled data being submitted'
+        ' on the off-study date?',
+        max_length=3,
+        choices=YES_NO)
 
     comment = models.TextField(
         max_length=250,

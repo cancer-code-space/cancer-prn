@@ -20,7 +20,11 @@ class SubjectOffStudyAdmin(ModelAdminMixin, admin.ModelAdmin):
                 'offstudy_date',
                 'reason',
                 'reason_other',
+                'schedule'
                 'comment']}
          ), audit_fieldset_tuple)
 
-    radio_fields = {'reason': admin.VERTICAL}
+    radio_fields = {
+        'reason': admin.VERTICAL,
+        'schedule': admin.VERTICAL
+    }
