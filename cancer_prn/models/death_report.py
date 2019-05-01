@@ -10,7 +10,7 @@ from edc_death_report.models import (
     DiagnosisCode, MedicalResponsibility)
 
 
-class SubjectDeath(DeathReportModelMixin,
+class DeathReport(DeathReportModelMixin,
                    UniqueSubjectIdentifierModelMixin,
                    SiteModelMixin, BaseUuidModel):
 

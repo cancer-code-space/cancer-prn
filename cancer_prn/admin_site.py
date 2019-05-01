@@ -18,4 +18,4 @@ class AdminSite(DjangoAdminSite):
         return context
 
 
-cancer_prn_admin = AdminSite(name='td_prn_admin')
+cancer_prn_admin = AdminSite(name='cancer_prn_admin')

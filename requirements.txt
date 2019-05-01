@@ -22,3 +22,6 @@ git+https://github.com/botswana-harvard/edc-offstudy.git
 git+https://github.com/botswana-harvard/edc-metadata.git
 git+https://github.com/botswana-harvard/edc-reference.git
 git+https://github.com/botswana-harvard/edc-dashboard.git
+git+https://github.com/botswana-harvard/edc-consent.git
+git+https://github.com/botswana-harvard/edc-metadata-rules.git
+git+https://github.com/botswana-harvard/edc-timepoint.git

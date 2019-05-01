@@ -5,11 +5,11 @@ from .modeladmin_mixins import ModelAdminMixin
 
 from ..admin_site import cancer_prn_admin
 from ..forms import SubjectDeathForm
-from ..models import SubjectDeath
+from ..models import DeathReport
 
 
-@admin.register(SubjectDeath, site=cancer_prn_admin)
-class SubjectDeathAdmin(ModelAdminMixin, admin.ModelAdmin):
+@admin.register(DeathReport, site=cancer_prn_admin)
+class DeathRportAdmin(ModelAdminMixin, admin.ModelAdmin):
 
     form = SubjectDeathForm
 

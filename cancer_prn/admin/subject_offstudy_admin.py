@@ -14,12 +14,13 @@ class SubjectOffStudyAdmin(ModelAdminMixin, admin.ModelAdmin):
 
     fieldsets = (
         (None, {
-            'fields': (
+            'fields': [
                 'subject_identifier',
-                'offstudy_datetime',
-                'offstudy_reason',
-                'offstudy_reason_other',
-                'comment'
-            )}),
-        audit_fieldset_tuple,
-    )
+                'report_datetime',
+                'offstudy_date',
+                'reason',
+                'reason_other',
+                'comment']}
+         ), audit_fieldset_tuple)
+
+    radio_fields = {'reason': admin.VERTICAL}
