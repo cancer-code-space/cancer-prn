@@ -36,8 +36,7 @@ class DeathReport(DeathReportModelMixin,
         ReasonHospitalized,
         verbose_name="if yes, hospitalized, what was the primary reason for hospitalisation? ",
         help_text="",
-        blank=True,
-        null=True)
+        blank=True)
 
     diagnosis_code = models.ManyToManyField(
         DiagnosisCode,
