@@ -25,3 +25,4 @@ git+https://github.com/botswana-harvard/edc-dashboard.git
 git+https://github.com/botswana-harvard/edc-consent.git
 git+https://github.com/botswana-harvard/edc-metadata-rules.git
 git+https://github.com/botswana-harvard/edc-timepoint.git
+git+https://github.com/botswana-harvard/edc-fieldsets.git@develop#egg=edc_fieldsets
