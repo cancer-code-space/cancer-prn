@@ -1,33 +1,16 @@
-from datetime import datetime, time
 from django.db import models
+from cancer_subject.models.cancer_diagnosis import OtherCharField
 from edc_action_item.model_mixins import ActionModelMixin
 from edc_base.model_fields import IsDateEstimatedField
 from edc_base.model_mixins.base_uuid_model import BaseUuidModel
-from edc_base.model_mixins import ListModelMixin
+from edc_base.model_validators.date import date_not_future
 from edc_base.sites.site_model_mixin import SiteModelMixin
+from edc_constants.choices import YES_NO
+from edc_protocol.validators import date_not_before_study_start
 
 from ..action_items import DEATH_REPORT_ACTION
-from edc_protocol.validators import date_not_before_study_start
-from edc_base.model_validators.date import date_not_future
-from cancer_subject.models.cancer_diagnosis import OtherCharField
-from edc_constants.choices import YES_NO
-
-
-class DeathCauseInfo (ListModelMixin, BaseUuidModel):
-    class Meta:
-        app_label = "cancer_prn"
-
-
-class ReasonHospitalized (ListModelMixin, BaseUuidModel):
-
-    class Meta:
-        app_label = "cancer_prn"
-
-
-class CauseCategory (ListModelMixin, BaseUuidModel):
-
-    class Meta:
-        app_label = "cancer_prn"
+from .list_models import (
+    DeathCauseInfo, CauseCategory, ReasonHospitalized)
 
 
 
@@ -53,7 +36,8 @@ class DeathReport(SiteModelMixin,
         help_text="",
         )
 
-    death_cause_info = models.ManyToManyField(DeathCauseInfo,
+    death_cause_info = models.ManyToManyField(
+        DeathCauseInfo,
         verbose_name="What is the primary source of cause of death information? (if multiple source of information, list one with the smallest number closest to the top of the list) ",
         help_text="",
         )

@@ -34,3 +34,7 @@ class DeathRportAdmin(ModelAdminMixin, admin.ModelAdmin):
     }
 
     list_display = ('subject_identifier', 'death_date')
+    filter_horizontal = (
+        'death_cause_info',
+        'death_cause_category',
+        'death_reason_hospitalized')
