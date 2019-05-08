@@ -3,6 +3,7 @@
 	<name>cancer-prn</name>
 	<comment></comment>
 	<projects>
+		<project>edc-action-item</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
