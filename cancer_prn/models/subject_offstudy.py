@@ -1,27 +1,33 @@
 from django.db import models
-
-from edc_base.model_mixins import BaseUuidModel
-from edc_base.model_managers import HistoricalRecords
 from edc_base.model_fields.custom_fields import OtherCharField
-from edc_visit_schedule.site_visit_schedules import site_visit_schedules
+from edc_base.model_managers import HistoricalRecords
+from edc_base.model_mixins import BaseUuidModel
 from edc_base.model_validators import date_not_future
 from edc_base.model_validators.date import datetime_not_future
 from edc_base.utils import get_utcnow
+from edc_constants.choices import YES_NO
+from edc_identifier.managers import SubjectIdentifierManager
 from edc_protocol.validators import date_not_before_study_start
 from edc_protocol.validators import datetime_not_before_study_start
+from edc_visit_schedule.model_mixins import OffScheduleModelMixin
+from edc_visit_schedule.site_visit_schedules import site_visit_schedules
+
 from cancer_subject.models.onschedule import OnSchedule
-from edc_offstudy.choices import OFF_STUDY_REASONS
-from edc_identifier.managers import SubjectIdentifierManager
-from edc_visit_schedule.model_mixins.off_schedule_model_mixin import (
-    OffScheduleModelMixin)
-from edc_constants.choices import YES_NO
+from edc_action_item.model_mixins import ActionModelMixin
+
+from ..action_items import SUBJECT_OFFSTUDY_ACTION
+from ..choices import OFF_STUDY_REASON
 
 
-class SubjectOffstudy(OffScheduleModelMixin, BaseUuidModel):
+class SubjectOffstudy(OffScheduleModelMixin, ActionModelMixin, BaseUuidModel):
 
     """A model completed by the user that completed when the
     subject is taken off-study.
     """
+
+    tracking_identifier_prefix = 'OS'
+
+    action_name = SUBJECT_OFFSTUDY_ACTION
 
     offstudy_date = models.DateField(
         verbose_name="Off-study Date",
@@ -45,7 +51,7 @@ class SubjectOffstudy(OffScheduleModelMixin, BaseUuidModel):
         verbose_name="Please code the primary"
         " reason participant taken off-study",
         max_length=115,
-        choices=OFF_STUDY_REASONS,
+        choices=OFF_STUDY_REASON,
         null=True)
 
     reason_other = OtherCharField()
@@ -65,6 +71,10 @@ class SubjectOffstudy(OffScheduleModelMixin, BaseUuidModel):
     objects = SubjectIdentifierManager()
 
     history = HistoricalRecords()
+
+    def save(self, *args, **kwargs):
+        self.consent_version = None
+        super(SubjectOffstudy, self).save(*args, **kwargs)
 
     def take_off_schedule(self):
         on_schedule = OnSchedule

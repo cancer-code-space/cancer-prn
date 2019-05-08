@@ -20,11 +20,13 @@ class SubjectOffStudyAdmin(ModelAdminMixin, admin.ModelAdmin):
                 'offstudy_date',
                 'reason',
                 'reason_other',
-                'schedule'
                 'comment']}
          ), audit_fieldset_tuple)
 
     radio_fields = {
         'reason': admin.VERTICAL,
-        'schedule': admin.VERTICAL
     }
+
+    search_fields = ['subject_identifier']
+
+    list_display = ('subject_identifier', 'offstudy_date')

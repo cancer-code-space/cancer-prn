@@ -1,15 +1,14 @@
 from django.contrib import admin
 from edc_model_admin import audit_fieldset_tuple
 
-from .modeladmin_mixins import ModelAdminMixin
-
 from ..admin_site import cancer_prn_admin
 from ..forms import SubjectDeathForm
 from ..models import DeathReport
+from .modeladmin_mixins import ModelAdminMixin
 
 
 @admin.register(DeathReport, site=cancer_prn_admin)
-class DeathRportAdmin(ModelAdminMixin, admin.ModelAdmin):
+class DeathReportAdmin(ModelAdminMixin, admin.ModelAdmin):
 
     form = SubjectDeathForm
 
@@ -38,3 +37,5 @@ class DeathRportAdmin(ModelAdminMixin, admin.ModelAdmin):
         'death_cause_info',
         'death_cause_category',
         'death_reason_hospitalized')
+
+    search_fields = ['subject_identifier']
