@@ -8,15 +8,15 @@ from edc_constants.choices import YES_NO
 from edc_protocol.validators import date_not_before_study_start
 
 from edc_action_item.model_mixins import ActionModelMixin
+from edc_visit_schedule.model_mixins import OffScheduleModelMixin
 
 from ..action_items import DEATH_REPORT_ACTION
 from .list_models import (
     DeathCauseInfo, CauseCategory, ReasonHospitalized)
 
 
-class DeathReport(SiteModelMixin,
+class DeathReport(OffScheduleModelMixin, SiteModelMixin,
                   ActionModelMixin, BaseUuidModel):
-
     action_name = DEATH_REPORT_ACTION
 
     tracking_identifier_prefix = 'DR'
@@ -39,8 +39,8 @@ class DeathReport(SiteModelMixin,
     death_cause_info = models.ManyToManyField(
         DeathCauseInfo,
         verbose_name='What is the primary source of cause of death information? '
-        '(if multiple source of information, list one with the smallest number '
-        'closest to the top of the list) ',
+                     '(if multiple source of information, list one with the smallest number '
+                     'closest to the top of the list) ',
         help_text='',
     )
 
@@ -55,16 +55,16 @@ class DeathReport(SiteModelMixin,
         blank=True,
         null=True,
         verbose_name='Describe the major cause of death(including pertinent autopsy '
-        'information if available),starting with the first noticeable illness thought '
-        'to be related to death,continuing to time of death. ',
+                     'information if available),starting with the first noticeable illness thought '
+                     'to be related to death,continuing to time of death. ',
         help_text='Note: Cardiac and pulmonary arrest are not major reasons and '
-        'should not be used to describe major cause)'
+                  'should not be used to describe major cause)'
     )
 
     death_cause_category = models.ManyToManyField(
         CauseCategory,
         verbose_name='Based on the above description, what category best '
-        'defines the major cause of death? ',
+                     'defines the major cause of death? ',
         help_text='',
     )
 
@@ -84,14 +84,14 @@ class DeathReport(SiteModelMixin,
     death_reason_hospitalized = models.ManyToManyField(
         ReasonHospitalized,
         verbose_name='if yes, hospitalized, what was the primary '
-        'reason for hospitalisation? ',
+                     'reason for hospitalisation? ',
         help_text='',
         blank=True,
     )
 
     days_hospitalized = models.IntegerField(
         verbose_name='For how many days was the participant hospitalised '
-        'during the illness immediately before death? ',
+                     'during the illness immediately before death? ',
         help_text='in days',
         default=0,
     )
@@ -102,6 +102,7 @@ class DeathReport(SiteModelMixin,
         blank=True,
         null=True,
     )
+
 
     class Meta:
         app_label = 'cancer_prn'
