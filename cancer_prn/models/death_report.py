@@ -15,8 +15,7 @@ from .list_models import (
     DeathCauseInfo, CauseCategory, ReasonHospitalized)
 
 
-class DeathReport(OffScheduleModelMixin, SiteModelMixin,
-                  ActionModelMixin, BaseUuidModel):
+class DeathReport(SiteModelMixin, ActionModelMixin, BaseUuidModel):
     action_name = DEATH_REPORT_ACTION
 
     tracking_identifier_prefix = 'DR'
@@ -39,7 +38,8 @@ class DeathReport(OffScheduleModelMixin, SiteModelMixin,
     death_cause_info = models.ManyToManyField(
         DeathCauseInfo,
         verbose_name='What is the primary source of cause of death information? '
-                     '(if multiple source of information, list one with the smallest number '
+                     '(if multiple source of information, list one with the smallest '
+                     'number '
                      'closest to the top of the list) ',
         help_text='',
     )
@@ -55,7 +55,8 @@ class DeathReport(OffScheduleModelMixin, SiteModelMixin,
         blank=True,
         null=True,
         verbose_name='Describe the major cause of death(including pertinent autopsy '
-                     'information if available),starting with the first noticeable illness thought '
+                     'information if available),starting with the first noticeable '
+                     'illness thought '
                      'to be related to death,continuing to time of death. ',
         help_text='Note: Cardiac and pulmonary arrest are not major reasons and '
                   'should not be used to describe major cause)'
@@ -102,7 +103,6 @@ class DeathReport(OffScheduleModelMixin, SiteModelMixin,
         blank=True,
         null=True,
     )
-
 
     class Meta:
         app_label = 'cancer_prn'
