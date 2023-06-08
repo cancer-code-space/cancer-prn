@@ -1,4 +1,7 @@
+from django.apps import apps as django_apps
+from django.core.exceptions import ValidationError
 from django.db import models
+from edc_action_item.model_mixins import ActionModelMixin
 from edc_base.model_fields.custom_fields import OtherCharField
 from edc_base.model_managers import HistoricalRecords
 from edc_base.model_mixins import BaseUuidModel
@@ -12,15 +15,14 @@ from edc_protocol.validators import datetime_not_before_study_start
 from edc_visit_schedule.model_mixins import OffScheduleModelMixin
 from edc_visit_schedule.site_visit_schedules import site_visit_schedules
 
+from cancer_subject.models.model_mixins import ConsentVersionModelMixin
 from cancer_subject.models.onschedule import OnSchedule
-from edc_action_item.model_mixins import ActionModelMixin
-
 from ..action_items import SUBJECT_OFFSTUDY_ACTION
 from ..choices import OFF_STUDY_REASON
 
 
-class SubjectOffstudy(OffScheduleModelMixin, ActionModelMixin, BaseUuidModel):
-
+class SubjectOffstudy(OffScheduleModelMixin, ConsentVersionModelMixin, ActionModelMixin,
+                      BaseUuidModel):
     """A model completed by the user that completed when the
     subject is taken off-study.
     """
@@ -49,7 +51,7 @@ class SubjectOffstudy(OffScheduleModelMixin, ActionModelMixin, BaseUuidModel):
 
     reason = models.CharField(
         verbose_name="Please code the primary"
-        " reason participant taken off-study",
+                     " reason participant taken off-study",
         max_length=115,
         choices=OFF_STUDY_REASON,
         null=True)
@@ -58,7 +60,7 @@ class SubjectOffstudy(OffScheduleModelMixin, ActionModelMixin, BaseUuidModel):
 
     schedule = models.CharField(
         verbose_name='Are scheduled data being submitted'
-        ' on the off-study date?',
+                     ' on the off-study date?',
         max_length=3,
         choices=YES_NO)
 
@@ -73,7 +75,6 @@ class SubjectOffstudy(OffScheduleModelMixin, ActionModelMixin, BaseUuidModel):
     history = HistoricalRecords()
 
     def save(self, *args, **kwargs):
-        self.consent_version = None
         super(SubjectOffstudy, self).save(*args, **kwargs)
 
     def take_off_schedule(self):
@@ -87,6 +88,19 @@ class SubjectOffstudy(OffScheduleModelMixin, ActionModelMixin, BaseUuidModel):
             _, schedule = site_visit_schedules.get_by_onschedule_model(
                 onschedule_model=on_schedule._meta.label_lower)
             schedule.take_off_schedule(offschedule_model_obj=self)
+
+    def get_consent_version(self):
+        subject_consent_cls = django_apps.get_model(
+            'cancer_subject.subjectconsent')
+        try:
+            subject_consent_obj = subject_consent_cls.objects.get(
+                subject_identifier=self.subject_identifier)
+        except subject_consent_cls.DoesNotExist:
+            raise ValidationError(
+                'Subject {} is Missing Consent obj'.format(
+                    self.subject_identifier))
+        else:
+            return subject_consent_obj.version
 
     class Meta:
         app_label = "cancer_prn"
